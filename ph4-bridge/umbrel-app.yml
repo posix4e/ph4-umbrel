@@ -1,0 +1,65 @@
+manifestVersion: 1
+id: ph4-bridge
+category: automation
+name: ph4 Bridge
+version: "1.0.0"
+tagline: Keeps the household collector and local lights controller running for ph4
+description: >-
+  Runs the two household daemons that ph4, a Cloudflare Worker, cannot run
+  itself. The collector copies a Raspberry Pi's water-sensor readings and
+  health telemetry over Tailscale SSH and pushes them to ph4. The lights
+  controller drives Tuya lamps and an air purifier over the LAN and keeps
+  their schedules running through internet outages.
+
+
+  The status page shows the last cycle, pushes, lamp state and the SSH public
+  key to authorize on the Pi. Collector settings are edited here in Umbrel;
+  the lights configuration (device keys) stays in this app's data directory.
+  No inbound ports are opened.
+releaseNotes: >-
+  Initial release. Replaces the systemd user services that umbrelOS stopped at
+  every reboot.
+developer: posix4e
+website: https://github.com/posix4e/ph4-umbrel
+dependencies:
+  - tailscale
+repo: https://github.com/posix4e/ph4-umbrel
+support: https://github.com/posix4e/ph4-umbrel/issues
+port: 7449
+gallery: []
+path: ""
+defaultUsername: ""
+defaultPassword: ""
+submitter: posix4e
+submission: https://github.com/posix4e/ph4-umbrel
+icon: https://raw.githubusercontent.com/posix4e/ph4-umbrel/main/ph4-bridge/icon.svg
+backupIgnore:
+  - data/collector/readings.local.sqlite
+environment:
+  - name: PH4_PUSH_KEY
+    services: [collector]
+    note: Push secret from ph4 Settings (/api/cistern/push). Blank uses push_key from data/collector/config.json.
+  - name: PH4_PUSH_URL
+    services: [collector]
+    note: ph4 ingest endpoint, e.g. https://<your-ph4-host>/ingest/cistern. Blank uses config.json.
+  - name: PH4_PI_HOST
+    services: [collector]
+    note: Tailscale IP or hostname of the Pi holding readings.sqlite. Blank uses config.json.
+  - name: PH4_PI_PORT
+    services: [collector]
+    note: SSH port on the Pi. Blank uses config.json (or 22).
+  - name: PH4_PI_USER
+    services: [collector]
+    note: SSH user on the Pi; authorize this app's key for it (shown on the status page). Blank uses config.json.
+  - name: PH4_PI_SQLITE
+    services: [collector]
+    note: Absolute path of readings.sqlite on the Pi. Blank uses config.json.
+  - name: PH4_PI_TELEMETRY_SCRIPT
+    services: [collector]
+    note: Absolute path of ph4_telemetry.py on the Pi; leave blank to skip health telemetry.
+  - name: PH4_TANK_ID
+    services: [collector]
+    note: Tank id readings are tagged with. Blank uses config.json (or "cistern").
+  - name: PH4_INTERVAL_SECONDS
+    services: [collector]
+    note: Seconds between collection cycles. Blank uses config.json (or 60).

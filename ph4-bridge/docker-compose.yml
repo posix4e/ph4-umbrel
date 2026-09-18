@@ -1,0 +1,50 @@
+version: "3.7"
+
+services:
+  app_proxy:
+    environment:
+      APP_HOST: ph4-bridge_web_1
+      APP_PORT: 8080
+      # JSON health for curl from an SSH session; the page itself stays behind Umbrel login.
+      PROXY_AUTH_WHITELIST: "/healthz"
+
+  collector:
+    image: ghcr.io/posix4e/ph4-bridge:sha-0000000@sha256:0000000000000000000000000000000000000000000000000000000000000000
+    command: ["collector"]
+    user: "1000:1000"
+    init: true
+    restart: on-failure
+    stop_grace_period: 1m
+    environment:
+      CISTERN_COLLECTOR_CONFIG: /data/collector/config.json
+      CISTERN_COLLECTOR_STATE: /data/collector/state.json
+      CISTERN_COLLECTOR_STATUS: /data/collector/status.json
+      PH4_SSH_IDENTITY: /data/ssh/id_ed25519
+      PH4_SSH_KNOWN_HOSTS: /data/ssh/known_hosts
+    volumes:
+      - ${APP_DATA_DIR}/data/collector:/data/collector
+      - ${APP_DATA_DIR}/data/ssh:/data/ssh
+
+  lights:
+    image: ghcr.io/posix4e/ph4-bridge:sha-0000000@sha256:0000000000000000000000000000000000000000000000000000000000000000
+    command: ["lights"]
+    user: "1000:1000"
+    init: true
+    restart: on-failure
+    stop_grace_period: 1m
+    environment:
+      LOCAL_LIGHTS_STATUS: /data/lights/status.json
+    volumes:
+      - ${APP_DATA_DIR}/data/lights:/data/lights
+
+  web:
+    image: ghcr.io/posix4e/ph4-bridge:sha-0000000@sha256:0000000000000000000000000000000000000000000000000000000000000000
+    command: ["web"]
+    user: "1000:1000"
+    init: true
+    restart: on-failure
+    stop_grace_period: 1m
+    volumes:
+      - ${APP_DATA_DIR}/data/collector:/data/collector:ro
+      - ${APP_DATA_DIR}/data/lights:/data/lights:ro
+      - ${APP_DATA_DIR}/data/ssh:/data/ssh:ro

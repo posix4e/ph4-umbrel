@@ -1,0 +1,9 @@
+#!/bin/sh
+# umbreld runs this as root before `docker compose up`. All three services run
+# as uid 1000 and must own their bind mounts (the collector writes its SSH key
+# there on first start). umbreld strips the .gitkeep files when it copies this
+# package, so the subdirectories may not exist either; without them Docker
+# would create the mount points as root and the key generation would fail.
+cd "$(dirname "$0")/.." || exit 0
+mkdir -p data/collector data/lights data/ssh
+chown -R 1000:1000 data
