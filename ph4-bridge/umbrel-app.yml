@@ -2,7 +2,7 @@ manifestVersion: 1
 id: ph4-bridge
 category: automation
 name: ph4 Bridge
-version: "1.0.0"
+version: "1.0.1"
 tagline: Keeps the household collector and local lights controller running for ph4
 description: >-
   Runs the two household daemons that ph4, a Cloudflare Worker, cannot run
@@ -17,8 +17,10 @@ description: >-
   the lights configuration (device keys) stays in this app's data directory.
   No inbound ports are opened.
 releaseNotes: >-
-  Initial release. Replaces the systemd user services that umbrelOS stopped at
-  every reboot.
+  One unreachable lamp no longer holds the others off: a scheduled stop now
+  counts once any lamp confirms, and the lamps that did not answer are shown on
+  the dashboard. Status page: scheduled times ahead read "in 3 min"; an empty
+  log says so.
 developer: posix4e
 website: https://github.com/posix4e/ph4-umbrel
 dependencies:

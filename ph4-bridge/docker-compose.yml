@@ -9,7 +9,7 @@ services:
       PROXY_AUTH_WHITELIST: "/healthz"
 
   collector:
-    image: ghcr.io/posix4e/ph4-bridge:sha-635bba2@sha256:2a56bb125e5d65ab171ea5038c1deca8e7752cd5914932e4a1d65df384cfddba
+    image: ghcr.io/posix4e/ph4-bridge:sha-7a7af06@sha256:8503babca7d3f78ea783bbb1c93d433aff0451d52804c36ded213007f1007ea5
     command: ["collector"]
     user: "1000:1000"
     init: true
@@ -26,7 +26,7 @@ services:
       - ${APP_DATA_DIR}/data/ssh:/data/ssh
 
   lights:
-    image: ghcr.io/posix4e/ph4-bridge:sha-635bba2@sha256:2a56bb125e5d65ab171ea5038c1deca8e7752cd5914932e4a1d65df384cfddba
+    image: ghcr.io/posix4e/ph4-bridge:sha-7a7af06@sha256:8503babca7d3f78ea783bbb1c93d433aff0451d52804c36ded213007f1007ea5
     command: ["lights"]
     user: "1000:1000"
     init: true
@@ -38,7 +38,7 @@ services:
       - ${APP_DATA_DIR}/data/lights:/data/lights
 
   web:
-    image: ghcr.io/posix4e/ph4-bridge:sha-635bba2@sha256:2a56bb125e5d65ab171ea5038c1deca8e7752cd5914932e4a1d65df384cfddba
+    image: ghcr.io/posix4e/ph4-bridge:sha-7a7af06@sha256:8503babca7d3f78ea783bbb1c93d433aff0451d52804c36ded213007f1007ea5
     command: ["web"]
     user: "1000:1000"
     init: true
