@@ -2,7 +2,7 @@ manifestVersion: 1
 id: ph4-winnow-gateways
 category: networking
 name: Winnow Gateways
-version: "1.0.1"
+version: "1.0.2"
 tagline: Tor and I2P SOCKS gateways for Winnow's peer routing, on your tailnet
 description: >-
   Gives Winnow's Automatic peer routing the two gateways it looks for. Tor goes
@@ -15,12 +15,14 @@ description: >-
   The I2P side also serves the signed census mirror at the address compiled
   into Winnow, once its destination key is placed in this app's data directory
   as data/i2pd/winnow-census-mirror.dat. The status page lists the mirrored
-  files. Add both gateways to the tailnet with one reusable Tailscale auth key
-  tagged tag:winnow-tor and tag:winnow-i2p, entered below.
+  files. Add both gateways to the tailnet with one reusable, untagged Tailscale
+  auth key, entered below. Each gateway asks for its own tag, so the tailnet
+  policy must give tag:winnow-tor and tag:winnow-i2p an owner, such as
+  autogroup:admin.
 releaseNotes: >-
-  Takes a Tailscale auth key in the app settings. The login link in each
-  gateway's log changed every minute, because the container gives up waiting
-  for a login after one and restarts.
+  Corrects the auth key note. Keys were refused with "requested tags are
+  invalid or not permitted" until the tailnet policy gave tag:winnow-tor and
+  tag:winnow-i2p an owner; an untagged key then worked.
 developer: posix4e
 website: https://github.com/winnowwallet/census/tree/main/gateways
 dependencies: []
@@ -37,4 +39,4 @@ icon: https://raw.githubusercontent.com/posix4e/ph4-umbrel/main/ph4-winnow-gatew
 environment:
   - name: TS_AUTHKEY
     services: [tor, i2p]
-    note: Tailscale auth key, reusable, tagged tag:winnow-tor and tag:winnow-i2p. Each gateway uses it once; it can be cleared after both have joined.
+    note: Tailscale auth key, reusable and untagged. The tailnet policy must give tag:winnow-tor and tag:winnow-i2p an owner, such as autogroup:admin. Each gateway uses the key once; it can be cleared after both have joined.
