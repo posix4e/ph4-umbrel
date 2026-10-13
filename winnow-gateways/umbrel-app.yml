@@ -1,0 +1,32 @@
+manifestVersion: 1
+id: winnow-gateways
+category: networking
+name: Winnow Gateways
+version: "1.0.0"
+tagline: Tor and I2P SOCKS gateways for Winnow's peer routing, on your tailnet
+description: >-
+  Gives Winnow's Automatic peer routing the two gateways it looks for. Tor goes
+  through Umbrel's own Tor proxy; I2P through a separate i2pd. Each joins the
+  tailnet under the name Winnow resolves, winnow-tor-gateway on port 9050 and
+  winnow-i2p-gateway on port 4447, as a SOCKS5 proxy and nothing else: no
+  routes, no exit node, no LAN or internet ports.
+
+
+  The I2P side also serves the signed census mirror at the address compiled
+  into Winnow, once its destination key is placed in this app's data directory
+  as data/i2pd/winnow-census-mirror.dat. The status page lists the mirrored
+  files. Add each gateway to the tailnet with the login link in its log.
+releaseNotes: ""
+developer: posix4e
+website: https://github.com/winnowwallet/census/tree/main/gateways
+dependencies: []
+repo: https://github.com/posix4e/ph4-umbrel
+support: https://github.com/posix4e/ph4-umbrel/issues
+port: 8480
+gallery: []
+path: ""
+defaultUsername: ""
+defaultPassword: ""
+submitter: posix4e
+submission: https://github.com/posix4e/ph4-umbrel
+icon: https://raw.githubusercontent.com/posix4e/ph4-umbrel/main/winnow-gateways/icon.svg
