@@ -3,7 +3,7 @@ version: "3.7"
 services:
   app_proxy:
     environment:
-      APP_HOST: winnow-gateways_mirror_1
+      APP_HOST: ph4-winnow-gateways_mirror_1
       APP_PORT: 8480
 
   # Tailscale in userspace mode, serving tailnet TCP 9050 from Umbrel's Tor
