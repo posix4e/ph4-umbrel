@@ -1,5 +1,5 @@
 manifestVersion: 1
-id: winnow-gateways
+id: ph4-winnow-gateways
 category: networking
 name: Winnow Gateways
 version: "1.0.0"
@@ -29,4 +29,4 @@ defaultUsername: ""
 defaultPassword: ""
 submitter: posix4e
 submission: https://github.com/posix4e/ph4-umbrel
-icon: https://raw.githubusercontent.com/posix4e/ph4-umbrel/main/winnow-gateways/icon.svg
+icon: https://raw.githubusercontent.com/posix4e/ph4-umbrel/main/ph4-winnow-gateways/icon.svg
