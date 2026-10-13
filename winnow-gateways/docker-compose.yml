@@ -1,0 +1,66 @@
+version: "3.7"
+
+services:
+  app_proxy:
+    environment:
+      APP_HOST: winnow-gateways_mirror_1
+      APP_PORT: 8480
+
+  # Tailscale in userspace mode, serving tailnet TCP 9050 from Umbrel's Tor
+  # proxy (tor_proxy, 10.21.21.11:9050 on umbrel_main_network).
+  tor:
+    image: tailscale/tailscale:v1.102.5@sha256:c507f3a2a6ab1cabd8d809b98edeb41edbd5c3fb6ad9632ffd098b4c7d0b4065
+    restart: on-failure
+    environment:
+      TS_HOSTNAME: winnow-tor-gateway
+      TS_EXTRA_ARGS: --advertise-tags=tag:winnow-tor
+      TS_STATE_DIR: /var/lib/tailscale
+      TS_USERSPACE: "true"
+      TS_AUTH_ONCE: "true"
+      TS_SERVE_CONFIG: /config/serve.json
+    volumes:
+      - ${APP_DATA_DIR}/data/tor:/var/lib/tailscale
+      - ${APP_DATA_DIR}/serve/tor.json:/config/serve.json:ro
+
+  i2p:
+    image: tailscale/tailscale:v1.102.5@sha256:c507f3a2a6ab1cabd8d809b98edeb41edbd5c3fb6ad9632ffd098b4c7d0b4065
+    restart: on-failure
+    environment:
+      TS_HOSTNAME: winnow-i2p-gateway
+      TS_EXTRA_ARGS: --advertise-tags=tag:winnow-i2p
+      TS_STATE_DIR: /var/lib/tailscale
+      TS_USERSPACE: "true"
+      TS_AUTH_ONCE: "true"
+      TS_SERVE_CONFIG: /config/serve.json
+    volumes:
+      - ${APP_DATA_DIR}/data/i2p:/var/lib/tailscale
+      - ${APP_DATA_DIR}/serve/i2p.json:/config/serve.json:ro
+
+  # Its own router, not the Bitcoin app's, which only offers SAM. SOCKS is
+  # reachable on the app network only; the console, HTTP proxy and SAM are off.
+  i2pd:
+    image: purplei2p/i2pd:release-2.59.0@sha256:257653c18ce0b127ef480e3d8373b3ddbf1495e842674c8cfc59909be0015979
+    user: "1000:1000"
+    restart: on-failure
+    stop_grace_period: 1m
+    command:
+      - --socksproxy.address=0.0.0.0
+      - --socksproxy.port=4447
+      - --httpproxy.enabled=false
+      - --http.enabled=false
+      - --sam.enabled=false
+      - --loglevel=error
+    volumes:
+      - ${APP_DATA_DIR}/data/i2pd:/home/i2pd/data
+
+  # Serves the census mirror to i2pd and to the status page, and copies the
+  # signed files from census.winnowwallet.com every 30 minutes.
+  mirror:
+    image: python:3.13-alpine@sha256:2d9aefe2fef018a7eb2c13064c89c71929800fd2e5dccdbf52ea5da5bb8d929a
+    user: "1000:1000"
+    init: true
+    restart: on-failure
+    command: ["python3", "/app/mirror.py"]
+    volumes:
+      - ${APP_DATA_DIR}/mirror.py:/app/mirror.py:ro
+      - ${APP_DATA_DIR}/data/census:/srv
